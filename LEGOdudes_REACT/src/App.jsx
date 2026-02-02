@@ -1,17 +1,20 @@
 import './style/lego.css'
 import { products } from './assets/legodudes'
+import { useState } from 'react'
 
 function App() {
 
-  function Header(){
-    return(
+  const [isOpen, setIsOpen] = useState(false)
+
+  function Header({setIsOpen}){
+    return (
       <header>
         <h1>
           <a href="index.html">
             <img src="website_images/LD_logo.svg" alt="LEGOdudes logo"/>
           </a>
         </h1>
-        <button id="cart-button">
+        <button id="cart-button" onClick={()=> setIsOpen((prev) => !prev)}>
           <div id="cart-quantity">0</div>
             <img src="website_images/legocart.svg" alt="Handlevogn"/>
         </button>
@@ -20,7 +23,7 @@ function App() {
   }
 
   function Nav(){
-    return(
+    return (
       <nav>
         <a href="#">City</a>
         <a href="#">Ninjago</a>
@@ -32,11 +35,11 @@ function App() {
   }
  
   function CategoryTitle(){
-    return(<h2>Ninjago</h2>)
+    return (<h2>Ninjago</h2>)
   }
 
   function Products({products}){
-    return(
+    return (
     <div id="product-list">
       {products.map(p => <ProductCard key={p.prodid} p={p} />)}
 
@@ -44,24 +47,55 @@ function App() {
   }
 
   function ProductCard({p}){
+    const handleClick = ()=>{
+      console.log("Legg i handlekurv")
+    }
+
     return(
-    <article class="product-card">
+    <article className="product-card">
       <img src={`website_images/PROD_${p.imagefile}`} alt={p.title} />
       <a href="#">${p.category}</a>
       <h3>{p.title}</h3>
       <p>Kr {p.price},-</p>
-      <button onClick="addToCart(${p.prodid})">Legg i handlevogn</button>
+      <button onClick={handleClick}>Legg i handlevogn</button>
     </article>)
+  }
+
+  function Cart({isOpen}){
+    return (
+      <section id="cart" className={isOpen ? "" : "hidden"}>
+        <table id="cart-items">
+          <tbody>
+            <tr>
+              <td>Ingen varer i handlevognen enda.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Total pris: <span id="total-price">0</span> NOK</p>
+      </section>
+    )
+  }
+
+  function CartItem(){
+    return (
+      <tr>
+        <td className="title">${product.title}</td>
+        <td className="price">${product.price}</td>
+        <td className="quantity">${ci.quantity}</td>
+        <td className="delete"><button onClick="deleteFromCart(${product.prodid})">X</button></td>
+      </tr>
+    )
   }
 
   return (
     <div id="container">
-      <Header />
+      <Header setIsOpen={setIsOpen}/>
       <Nav />
       <main>
         <CategoryTitle />
         <Products products={products} />
       </main>
+      <Cart isOpen={isOpen} />
 
     </div>
   )
